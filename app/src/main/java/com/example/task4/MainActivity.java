@@ -4,10 +4,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.task4.Models.Item;
 import com.example.task4.Models.Json;
@@ -24,67 +28,65 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity {
 
-    private RecyclerView recyclerView;
-    private RecyclerView.Adapter mAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
-
-    private EditText custom_search;
+    private EditText search_string;
     private EditText region_id;
-    private Button button;
+    private Button search_button;
 
-    private TextView textView;
+
+    private String search;
+    private int reg_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-       // custom_search = findViewById(R.id.custom_string);
-        //region_id = findViewById(R.id.region);
-        button = findViewById(R.id.search_button);
 
-       recyclerView = findViewById(R.id.recyclerView);
+        search_string = findViewById(R.id.search_string);
+        region_id = findViewById(R.id.region_id);
+        search_button = findViewById(R.id.search_button);
 
-       // textView = findViewById(R.id.check);
 
-        mLayoutManager = new LinearLayoutManager(this);
 
-        ArrayList<String> list = new ArrayList<>();
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://catalog.api.2gis.ru/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        Api api = retrofit.create(Api.class);
-
-        Call<Json> call = api.getJson();
-
-        call.enqueue(new Callback<Json>() {
+        search_button.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onResponse(Call<Json> call, Response<Json> response) {
-                Json json = response.body();
+            public void onClick(View v) {
+                Retrofit retrofit = new Retrofit.Builder()
+                        .baseUrl("https://catalog.api.2gis.ru/")
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .build();
 
-                Result result = json.getResult();
+                search = search_string.getText().toString();
+                reg_id = Integer.parseInt(region_id.getText().toString());
 
-                List<Item> items = result.getItems();
+                Api api = retrofit.create(Api.class);
 
-                for(Item item: items) {
-                    list.add(item.getName());
+                Call<Json> call = api.getJson(reg_id, search);
+
+                call.enqueue(new Callback<Json>() {
+                    @Override
+                    public void onResponse(Call<Json> call, Response<Json> response) {
+                        Json json = response.body();
+
+                        Result result = json.getResult();
+
+                        List<Item> items = result.getItems();
+
+
+                        Intent intent = new Intent(MainActivity.this, Main2Activity.class);
+
+                        intent.putParcelableArrayListExtra("List of items", (ArrayList<? extends Parcelable>) items);
+
+                        startActivity(intent);
+
+                    }
+                    @Override
+                    public void onFailure(Call<Json> call, Throwable t) {
+                        Toast.makeText(MainActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
             }
-                recyclerView.setLayoutManager(mLayoutManager);
-                mAdapter = new Adapter(list);
-                recyclerView.setAdapter(mAdapter);
-
-            }
-           @Override
-           public void onFailure(Call<Json> call, Throwable t) {
-                list.add(t.getMessage());
-                recyclerView.setLayoutManager(mLayoutManager);
-                mAdapter = new Adapter(list);
-                recyclerView.setAdapter(mAdapter);
-           }
-       });
+        });
 
         /*Api_check api = retrofit.create(Api_check.class);
 

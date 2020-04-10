@@ -8,14 +8,17 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.task4.Models.Item;
+import com.example.task4.Models.Route;
+
 import java.util.ArrayList;
 
 public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
 
-    private ArrayList<String> list;
+    private ArrayList<Item> list;
 
 
-    public Adapter(ArrayList<String> list) {
+    public Adapter(ArrayList<Item> list) {
         this.list = list;
     }
 
@@ -38,9 +41,61 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        String currentItem = list.get(position);
+        Item currentItem = list.get(position);
 
-        holder.mText1.setText(currentItem);
+        String name_of_route = "Номер маршрута: "  + currentItem.getName();
+
+        String type_of_route = "";
+
+        if (currentItem.getSubtype().equals("bus")){
+            type_of_route = "Вид транспорта: Автобус";
+        }
+        else if (currentItem.getSubtype().equals("trolleybus")){
+            type_of_route = "Вид транспорта: Троллейбус";
+        }
+        else if (currentItem.getSubtype().equals("tram")) {
+            type_of_route = "Вид транспорта: Трамвай";
+        }
+        else if (currentItem.getSubtype().equals("metro")) {
+            type_of_route = "Вид транспорта: Метро";
+        }
+        else if (currentItem.getSubtype().equals("shuttle_bus")){
+            type_of_route = "Вид транспорта: Маршрутное такси";
+        }
+        else if (currentItem.getSubtype().equals("suburban_train")) {
+            type_of_route = "Вид транспорта: Электропоезд";
+        }
+        else if (currentItem.getSubtype().equals("funicular_railway")) {
+            type_of_route = "Вид транспорта: Фуникулёр";
+        }
+        else if (currentItem.getSubtype().equals("monorail")) {
+            type_of_route = "Вид транспорта: Монорельс";
+        }
+        else if (currentItem.getSubtype().equals("river_transport")){
+            type_of_route = "Вид транспорта: Водный транспорт";
+        }
+        else if (currentItem.getSubtype().equals("cable_car")) {
+            type_of_route = "Вид транспорта: Канатная дорога";
+        }
+        else if (currentItem.getSubtype().equals("light_rail")) {
+            type_of_route = "Вид транспорта: Скоростной трамвай";
+        }
+        else if (currentItem.getSubtype().equals("premetro")){
+            type_of_route = "Вид транспорта: Метротрам";
+        }
+        else if (currentItem.getSubtype().equals("light_metro")) {
+            type_of_route = "Вид транспорта: Лёгкое метро";
+        }
+        else if (currentItem.getSubtype().equals("aeroexpress")) {
+            type_of_route = "Вид транспорта: Аэроэкспресс";
+        }
+
+        String where_from =  "Начальная остановка: " + currentItem.getFromName();
+
+        String where_to = "Конечная остановка: " + currentItem.getToName();
+
+        holder.mText1.setText(name_of_route + "\n" + type_of_route + "\n" +
+                where_from + "\n" + where_to);
     }
 
     @Override

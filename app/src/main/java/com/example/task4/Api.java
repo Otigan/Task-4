@@ -8,18 +8,19 @@ import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
+import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface Api {
 
 
 
-    @GET("2.0/transport/route/search?key=ruzrgk1901&region_id=50&q=4")
+    @GET("2.0/transport/route/search?key=ruzrgk1901")
 
-    Call<Json> getJson();
+    Call<Json> getJson(
+            @Query("region_id") int id,
+            @Query("q") String search_string
+    );
 
-
-
-    @GET("2.0/suggest/list?q=%D0%A2%D0%BE%D0%BC%D1%81%D0%BA&key=ruzrgk1901&region_id=50")
-    Call<Result> getRes();
 
 }
