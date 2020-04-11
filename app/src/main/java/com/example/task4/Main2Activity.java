@@ -8,10 +8,8 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.example.task4.Models.Item;
-import com.example.task4.Models.Route;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class Main2Activity extends AppCompatActivity {
 

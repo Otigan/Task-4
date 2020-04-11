@@ -9,7 +9,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.task4.Models.Item;
-import com.example.task4.Models.Route;
 
 import java.util.ArrayList;
 

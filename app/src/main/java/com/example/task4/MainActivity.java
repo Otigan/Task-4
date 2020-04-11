@@ -1,17 +1,16 @@
 package com.example.task4;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.task4.Models.Item;
 import com.example.task4.Models.Json;
@@ -31,10 +30,9 @@ public class MainActivity extends AppCompatActivity {
     private EditText search_string;
     private EditText region_id;
     private Button search_button;
+    private TextView textView;
 
 
-    private String search;
-    private int reg_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,77 +43,60 @@ public class MainActivity extends AppCompatActivity {
         search_string = findViewById(R.id.search_string);
         region_id = findViewById(R.id.region_id);
         search_button = findViewById(R.id.search_button);
-
+        textView = findViewById(R.id.textView);
 
 
         search_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Retrofit retrofit = new Retrofit.Builder()
-                        .baseUrl("https://catalog.api.2gis.ru/")
-                        .addConverterFactory(GsonConverterFactory.create())
-                        .build();
 
-                search = search_string.getText().toString();
-                reg_id = Integer.parseInt(region_id.getText().toString());
+                String search_string_text = search_string.getText().toString();
+                String reg_id = region_id.getText().toString();
 
-                Api api = retrofit.create(Api.class);
-
-                Call<Json> call = api.getJson(reg_id, search);
-
-                call.enqueue(new Callback<Json>() {
-                    @Override
-                    public void onResponse(Call<Json> call, Response<Json> response) {
-                        Json json = response.body();
-
-                        Result result = json.getResult();
-
-                        List<Item> items = result.getItems();
+                if (TextUtils.isEmpty(search_string_text) && TextUtils.isEmpty(reg_id)) {
+                    Toast.makeText(MainActivity.this, "Please, enter search data",
+                            Toast.LENGTH_LONG).show();
+                }else{
+                    Retrofit retrofit = new Retrofit.Builder()
+                            .baseUrl("https://catalog.api.2gis.ru/")
+                            .addConverterFactory(GsonConverterFactory.create())
+                            .build();
 
 
-                        Intent intent = new Intent(MainActivity.this, Main2Activity.class);
+                    Api api = retrofit.create(Api.class);
 
-                        intent.putParcelableArrayListExtra("List of items", (ArrayList<? extends Parcelable>) items);
+                    Call<Json> call = api.getJson(Integer.parseInt(reg_id), search_string_text);
 
-                        startActivity(intent);
+                    call.enqueue(new Callback<Json>() {
+                        @Override
+                        public void onResponse(Call<Json> call, Response<Json> response) {
+                            Json json = response.body();
 
-                    }
-                    @Override
-                    public void onFailure(Call<Json> call, Throwable t) {
-                        Toast.makeText(MainActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
-                    }
-                });
+                            Result result = json.getResult();
+
+                            if(result == null) {
+                                Toast.makeText(MainActivity.this,
+                                        "The search returned no results, try again",
+                                        Toast.LENGTH_LONG).show();
+                            } else {
+                                List<Item> items = result.getItems();
+
+                                Intent intent = new Intent(MainActivity.this, Main2Activity.class);
+
+                                intent.putParcelableArrayListExtra("List of items", (ArrayList<? extends Parcelable>) items);
+
+                                startActivity(intent);
+                            }
+
+                        }
+
+                        @Override
+                        public void onFailure(Call<Json> call, Throwable t) {
+                            Toast.makeText(MainActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
             }
         });
-
-        /*Api_check api = retrofit.create(Api_check.class);
-
-
-        Call<List<Post>> call = api.getPost();
-
-        mLayoutManager = new LinearLayoutManager(this);
-
-        call.enqueue(new Callback<List<Post>>() {
-            @Override
-            public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
-                List<Post> posts = response.body();
-
-                for (Post post : posts) {
-                    String content = "";
-                    content += "ID " + post.getId() + "\n";
-                    content += "Title " + post.getTitle() + "\n\n";
-
-                    list.add(content);
-                }
-                recyclerView.setLayoutManager(mLayoutManager);
-                mAdapter = new Adapter(list);
-                recyclerView.setAdapter(mAdapter);
-            }
-
-            @Override
-            public void onFailure(Call<List<Post>> call, Throwable t) {
-
-            }
-        });*/
     }
 }
