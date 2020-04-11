@@ -7,6 +7,9 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.HashMap;
+
+//Model for result
 public class Item implements Parcelable {
 
     @SerializedName("name")
@@ -27,6 +30,8 @@ public class Item implements Parcelable {
     @SerializedName("type")
     @Expose
     private String type;
+
+    HashMap<String,String> map;
 
     protected Item(Parcel in) {
         name = in.readString();
@@ -95,6 +100,26 @@ public class Item implements Parcelable {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public HashMap<String, String> type_of_transport() {
+        map = new HashMap<>();
+
+        map.put("bus", "Автобус");
+        map.put("trolleybus", "Троллейбус");
+        map.put("tram", "Трамвай");
+        map.put("metro", "Метро");
+        map.put("shuttle_bus", "Электропоезд");
+        map.put("funicular_railway", "Фуникулёр");
+        map.put("monorail", "Монорельс");
+        map.put("river_transport", "Водный транспорт");
+        map.put("cable_car", "Канатная дорога");
+        map.put("light_rail", "Скоростной трамвай");
+        map.put("premetro", "Метротрам");
+        map.put("light_metro", "Лёгкое метро");
+        map.put("aeroexpress", "Аэроэкспресс");
+
+        return map;
     }
 
     @Override

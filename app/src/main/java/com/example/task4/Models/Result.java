@@ -6,6 +6,7 @@ import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+//Model for Json object with result items list
 public class Result {
 
     @SerializedName("items")

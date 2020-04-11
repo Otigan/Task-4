@@ -4,6 +4,7 @@ package com.example.task4.Models;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+//Model of Json 2gis response
 public class Json {
 
     @SerializedName("meta")
